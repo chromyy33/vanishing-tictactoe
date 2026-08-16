@@ -3,6 +3,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 
 const app = express();
+app.get('/', (req, res) => res.send('Vanishing TicTacToe Socket Server is Live'));
 const server = http.createServer(app);
 
 const io = new Server(server, {
@@ -102,11 +103,30 @@ io.on('connection', (socket) => {
 
   // Reset Game / Rematch
   socket.on('request_rematch', ({ roomId }) => {
-    socket.to(roomId).emit('rematch_requested', { requestedBy: socket.id });
+    const cleanRoomId = roomId ? String(roomId).trim().toUpperCase() : '';
+    console.log(`[Rematch] Player ${socket.id} requested rematch in room ${cleanRoomId}`);
+    if (cleanRoomId) {
+      socket.to(cleanRoomId).emit('rematch_requested', { requestedBy: socket.id });
+    }
   });
 
   socket.on('accept_rematch', ({ roomId }) => {
-    io.to(roomId).emit('rematch_started');
+    const cleanRoomId = roomId ? String(roomId).trim().toUpperCase() : '';
+    console.log(`[Rematch] Player ${socket.id} accepted rematch in room ${cleanRoomId}`);
+    if (cleanRoomId) {
+      io.to(cleanRoomId).emit('rematch_started');
+    }
+  });
+
+  // Explicit Leave Room handler
+  socket.on('leave_room', ({ roomId }) => {
+    const cleanRoomId = roomId ? String(roomId).trim().toUpperCase() : '';
+    if (cleanRoomId) {
+      console.log(`[Room] Player ${socket.id} left room ${cleanRoomId}`);
+      socket.to(cleanRoomId).emit('opponent_left', { message: 'Opponent left the game' });
+      socket.leave(cleanRoomId);
+      rooms.delete(cleanRoomId);
+    }
   });
 
   // Disconnect handler

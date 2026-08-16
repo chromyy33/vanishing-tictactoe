@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CellState, Player } from '../lib/game/types';
-import { AlertCircle } from 'lucide-react';
+import { CellState } from '../lib/game/types';
 
 interface CellProps {
   index: number;
@@ -28,39 +27,58 @@ export const Cell: React.FC<CellProps> = ({
       disabled={disabled || value !== null}
       aria-label={`Board cell ${index + 1}`}
       className={`
-        cell-3d relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 
-        rounded-2xl border border-slate-700/60 
-        flex items-center justify-center 
+        cell-3d relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 
+        rounded-2xl flex items-center justify-center 
         cursor-pointer select-none transition-all duration-200
-        ${isWinningCell ? 'bg-indigo-900/60 border-amber-400/80 shadow-[0_0_25px_rgba(250,204,21,0.5)]' : 'bg-slate-900/80 backdrop-blur-md'}
-        ${disabled && value === null ? 'opacity-60 cursor-not-allowed' : ''}
+        ${
+          isWinningCell
+            ? value === 'X'
+              ? 'bg-[#1e103d] border-[#ff2d78]/70 shadow-[0_0_25px_rgba(255,45,120,0.4)]'
+              : 'bg-[#0f2434] border-[#00e5b0]/70 shadow-[0_0_25px_rgba(0,229,176,0.4)]'
+            : ''
+        }
+        ${disabled && value === null ? 'opacity-40 cursor-not-allowed' : ''}
       `}
     >
-      {/* Warning indicator badge for oldest mark */}
-      {isBlinking && (
-        <span className="absolute top-2 right-2 text-amber-400 animate-bounce flex items-center gap-0.5 text-[10px] font-bold uppercase tracking-wider bg-amber-950/80 border border-amber-500/50 px-1.5 py-0.5 rounded-full z-10 shadow-md">
-          <AlertCircle className="w-3 h-3 text-amber-400" />
-          Vanishing
-        </span>
-      )}
-
-      {/* Symbol: X or O */}
+      {/* Symbol: X (Hot Pink Neon) or O (Cyan-Green Neon) */}
       {value !== null && (
         <div
           className={`
             symbol-container flex items-center justify-center transition-all transform duration-300
             ${value === 'X' ? 'symbol-x' : 'symbol-o'}
-            ${isBlinking ? 'symbol-blinking' : ''}
+            ${
+              isBlinking
+                ? value === 'X'
+                  ? 'symbol-blinking-x'
+                  : 'symbol-blinking-o'
+                : 'animate-symbol-pop'
+            }
           `}
         >
           {value === 'X' ? (
-            <svg className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           ) : (
-            <svg className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="9"></circle>
+            <svg
+              className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="8.5"></circle>
             </svg>
           )}
         </div>

@@ -1,130 +1,238 @@
 @import "tailwindcss";
 
-@layer base {
-  body {
-    background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
-    color: #f8fafc;
-    min-height: 100vh;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    overflow-x: hidden;
-  }
+:root {
+  --bg-base: #111111;
+  --bg-surface: #1a1a1a;
+  --bg-card: #222222;
+  --neon-x: #ff4757;
+  --neon-x-glow: rgba(255, 71, 87, 0.4);
+  --neon-o: #a3e635;
+  --neon-o-glow: rgba(163, 230, 53, 0.35);
+  --text-primary: #ffffff;
+  --text-muted: #555555;
+  --border-subtle: rgba(255, 255, 255, 0.06);
 }
 
-/* 3D Board Perspective Container */
-.board-perspective {
-  perspective: 1000px;
+body {
+  background-color: var(--bg-base);
+  /* Faint spotlight radial gradient centered behind the board + subtle 4% opacity graph grid */
+  background-image: 
+    radial-gradient(circle at 50% 50%, #1c1c1c 0%, #111111 70%, #0a0a0a 100%),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 32px 32px, 32px 32px;
+  background-position: center center;
+  color: var(--text-primary);
+  min-height: 100vh;
+  font-family: var(--font-dm-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
 }
 
-.board-grid-3d {
-  transform: rotateX(16deg) rotateY(0deg);
-  transform-style: preserve-3d;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+/* Display font utility — Bebas Neue for titles, scores, buttons */
+.font-display {
+  font-family: var(--font-bebas), sans-serif;
+  letter-spacing: 0.05em;
+  font-style: normal;
 }
 
-.board-grid-3d:hover {
-  transform: rotateX(10deg) rotateY(0deg);
+/* Fluid Typography Utilities */
+.text-fluid-title-main {
+  font-size: clamp(3.5rem, 14vw, 6.5rem);
+  line-height: 0.9;
 }
 
-/* 3D Cell Depth Effect */
+.text-fluid-title-sub {
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  line-height: 0.9;
+}
+
+.text-fluid-tagline {
+  font-size: clamp(0.65rem, 2.2vw, 0.8rem);
+  letter-spacing: 0.3em;
+}
+
+.text-fluid-button {
+  font-size: clamp(1.25rem, 4.5vw, 1.75rem);
+}
+
+.text-fluid-subbutton {
+  font-size: clamp(0.65rem, 2.2vw, 0.72rem);
+}
+
+/* Flat Board Container (No RotateX or Perspective tilt) */
+.board-container {
+  position: relative;
+}
+
+/* Cell Depth - Dark Raised Inset Square with subtle neumorphic shadow */
 .cell-3d {
   position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, background-color 0.2s ease;
+  background: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow: 
-    0 10px 0 0 rgba(15, 23, 42, 0.8),
-    0 15px 25px rgba(0, 0, 0, 0.6),
-    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    0 8px 0 0 #0a0a0a,
+    0 12px 24px rgba(0, 0, 0, 0.7),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .cell-3d:hover:not(:disabled) {
-  transform: translateY(-4px) translateZ(10px);
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.15);
   box-shadow: 
-    0 14px 0 0 rgba(15, 23, 42, 0.8),
-    0 20px 30px rgba(0, 240, 255, 0.15),
-    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    0 11px 0 0 #0a0a0a,
+    0 18px 30px rgba(0, 0, 0, 0.8),
+    inset 0 1px 2px rgba(255, 255, 255, 0.15);
 }
 
 .cell-3d:active:not(:disabled) {
-  transform: translateY(4px) translateZ(0px);
+  transform: translateY(3px);
   box-shadow: 
-    0 4px 0 0 rgba(15, 23, 42, 0.8),
-    0 5px 15px rgba(0, 0, 0, 0.4);
+    0 3px 0 0 #0a0a0a,
+    0 4px 10px rgba(0, 0, 0, 0.6);
 }
 
-/* Symbol Colors and Glows */
+/* Neon Sign Tube Glow Effects */
+/* X Symbol: Hot Pink Neon */
 .symbol-x {
-  color: #38bdf8;
-  text-shadow: 0 0 15px rgba(56, 189, 248, 0.8), 0 0 30px rgba(56, 189, 248, 0.4);
-  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.6));
+  color: var(--neon-x);
+  filter: 
+    drop-shadow(0 0 2px #ffffff)
+    drop-shadow(0 0 8px var(--neon-x))
+    drop-shadow(0 0 22px var(--neon-x-glow));
 }
 
+/* O Symbol: Cyan-Green Neon */
 .symbol-o {
-  color: #fb7185;
-  text-shadow: 0 0 15px rgba(251, 113, 133, 0.8), 0 0 30px rgba(251, 113, 133, 0.4);
-  filter: drop-shadow(0 0 10px rgba(251, 113, 133, 0.6));
+  color: var(--neon-o);
+  filter: 
+    drop-shadow(0 0 2px #ffffff)
+    drop-shadow(0 0 8px var(--neon-o))
+    drop-shadow(0 0 22px var(--neon-o-glow));
 }
 
-/* Blinking Oldest Mark Animation (SYMBOL ONLY, NOT CELL BACKGROUND!) */
-@keyframes symbolBlinkWarning {
+/* Active Score Number Glows */
+.score-active-x {
+  color: var(--neon-x);
+  text-shadow: 0 0 12px var(--neon-x-glow), 0 0 24px var(--neon-x-glow);
+}
+
+.score-active-o {
+  color: var(--neon-o);
+  text-shadow: 0 0 12px var(--neon-o-glow), 0 0 24px var(--neon-o-glow);
+}
+
+/* Blinking Oldest Mark Tube Pulse (ONLY SYMBOL GLOW ANIMATES) */
+@keyframes neonPulseX {
   0%, 100% {
     opacity: 1;
-    filter: drop-shadow(0 0 15px rgba(250, 204, 21, 0.9)) scale(1);
+    filter: 
+      drop-shadow(0 0 3px #ffffff)
+      drop-shadow(0 0 12px var(--neon-x))
+      drop-shadow(0 0 30px var(--neon-x));
     transform: scale(1);
   }
   50% {
-    opacity: 0.25;
-    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.3)) scale(0.92);
-    transform: scale(0.95);
+    opacity: 0.2;
+    filter: 
+      drop-shadow(0 0 1px #ffffff)
+      drop-shadow(0 0 3px var(--neon-x));
+    transform: scale(0.92);
   }
 }
 
-.symbol-blinking {
-  animation: symbolBlinkWarning 0.85s infinite ease-in-out;
-  color: #facc15 !important; /* Warning Amber glow */
-}
-
-/* Vanishing Fade Out Animation */
-@keyframes markVanish {
-  0% {
+@keyframes neonPulseO {
+  0%, 100% {
     opacity: 1;
-    transform: scale(1) rotate(0deg);
-    filter: blur(0px);
+    filter: 
+      drop-shadow(0 0 3px #ffffff)
+      drop-shadow(0 0 12px var(--neon-o))
+      drop-shadow(0 0 30px var(--neon-o));
+    transform: scale(1);
   }
   50% {
-    opacity: 0.5;
-    transform: scale(1.3) rotate(15deg);
-    filter: blur(4px);
+    opacity: 0.2;
+    filter: 
+      drop-shadow(0 0 1px #ffffff)
+      drop-shadow(0 0 3px var(--neon-o));
+    transform: scale(0.92);
+  }
+}
+
+/* Mark placement spring pop animation */
+@keyframes symbolPop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.2;
+  }
+  65% {
+    transform: scale(1.15);
+    opacity: 1;
   }
   100% {
-    opacity: 0;
-    transform: scale(0) rotate(45deg);
-    filter: blur(10px);
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
-.symbol-vanish {
-  animation: markVanish 0.35s ease-out forwards;
+.animate-symbol-pop {
+  animation: symbolPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* Winning SVG Line Laser Glow */
-@keyframes winningLaserPulse {
+.symbol-blinking-x {
+  animation: neonPulseX 0.8s infinite ease-in-out !important;
+}
+
+.symbol-blinking-o {
+  animation: neonPulseO 0.8s infinite ease-in-out !important;
+}
+
+/* Neon Winning Line Stroke Laser Bloom */
+@keyframes neonLaserPulsePink {
   0%, 100% {
     stroke-dashoffset: 0;
-    filter: drop-shadow(0 0 12px #38bdf8) drop-shadow(0 0 24px #38bdf8);
+    filter: drop-shadow(0 0 8px var(--neon-x)) drop-shadow(0 0 20px var(--neon-x));
   }
   50% {
-    filter: drop-shadow(0 0 20px #f43f5e) drop-shadow(0 0 35px #f43f5e);
+    filter: drop-shadow(0 0 16px var(--neon-x)) drop-shadow(0 0 32px var(--neon-x));
   }
 }
 
-.winning-line {
+@keyframes neonLaserPulseCyan {
+  0%, 100% {
+    stroke-dashoffset: 0;
+    filter: drop-shadow(0 0 8px var(--neon-o)) drop-shadow(0 0 20px var(--neon-o));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px var(--neon-o)) drop-shadow(0 0 32px var(--neon-o));
+  }
+}
+
+.winning-line-x {
   stroke-dasharray: 400;
   stroke-dashoffset: 400;
-  animation: drawLine 0.5s ease-out forwards, winningLaserPulse 2s infinite ease-in-out;
+  animation: drawLine 0.45s ease-out forwards, neonLaserPulsePink 2s infinite ease-in-out;
+}
+
+.winning-line-o {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: drawLine 0.45s ease-out forwards, neonLaserPulseCyan 2s infinite ease-in-out;
 }
 
 @keyframes drawLine {
   to {
     stroke-dashoffset: 0;
   }
+}
+
+/* Fade In Utility */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out forwards;
 }
