@@ -179,7 +179,7 @@ export const ScoreBar: React.FC<ScoreBarProps> = ({
 
       {/* Scoreboard Card — two columns, dynamic divider */}
       <div
-        className="w-full max-w-xs rounded-2xl border border-white/8 overflow-hidden"
+        className="w-[270px] xs:w-[296px] sm:w-[360px] md:w-[408px] rounded-2xl border border-white/8 overflow-hidden"
         style={{ background: 'var(--bg-surface)' }}
       >
         <div className="grid grid-cols-2 relative">

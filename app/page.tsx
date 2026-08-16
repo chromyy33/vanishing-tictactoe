@@ -14,6 +14,7 @@ import { GameOverModal } from '../components/GameOverModal';
 import { ConfirmExitModal } from '../components/ConfirmExitModal';
 import { OpponentLeftModal } from '../components/OpponentLeftModal';
 import { X, UserX } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 export default function Home() {
   const [gameState, setGameState] = useState<GameState>(createInitialState());
@@ -120,6 +121,44 @@ export default function Home() {
       socket.emit('accept_rematch', { roomId: activeRoomId });
     }
   }, [activeRoomId]);
+
+  // Victory Confetti Effect
+  useEffect(() => {
+    if (gameState.status === 'won' && gameState.winner) {
+      const colors = gameState.winner === 'X'
+        ? ['#ff4757', '#ff6b7a', '#ffffff']
+        : ['#a3e635', '#c5f135', '#ffffff'];
+
+      const duration = 1500;
+      const end = Date.now() + duration;
+
+      const frame = () => {
+        confetti({
+          particleCount: 4,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0, y: 0.5 },
+          colors,
+          scalar: 0.85,
+          zIndex: 9999
+        });
+        confetti({
+          particleCount: 4,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1, y: 0.5 },
+          colors,
+          scalar: 0.85,
+          zIndex: 9999
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      };
+      frame();
+    }
+  }, [gameState.status, gameState.winner]);
 
   // Mode Selection Handler
   const handleSelectMode = (
