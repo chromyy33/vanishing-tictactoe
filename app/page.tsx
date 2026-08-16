@@ -19,7 +19,7 @@ export default function Home() {
   const [gameState, setGameState] = useState<GameState>(createInitialState());
   const [score, setScore] = useState<ScoreState>({ xWins: 0, oWins: 0, ties: 0 });
   const [isMuted, setIsMuted] = useState(false);
-  const [isModeSelectorOpen, setIsModeSelectorOpen] = useState(false);
+  const [isModeSelectorOpen, setIsModeSelectorOpen] = useState(true);
   const [isOnlineModalOpen, setIsOnlineModalOpen] = useState(false);
   const [showRulesInfo, setShowRulesInfo] = useState(false);
   const [showConfirmExitModal, setShowConfirmExitModal] = useState(false);
