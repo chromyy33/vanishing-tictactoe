@@ -310,69 +310,87 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="h-screen h-[100dvh] max-h-screen w-full flex flex-col items-center justify-between p-2 sm:p-4 md:p-6 overflow-hidden select-none selection:bg-[var(--neon-x)] selection:text-white">
-      
-      {/* Top Bar Controls & Scoreboard */}
-      <header className="w-full shrink-0 pt-1 flex flex-col items-center">
-        <ScoreBar
-          score={score}
-          currentTurn={gameState.turn}
-          winner={gameState.winner}
-          mode={gameState.mode}
-          aiDifficulty={gameState.aiDifficulty}
-          isMuted={isMuted}
-          onToggleMute={handleToggleMute}
-          onResetGame={handleResetGame}
-          onOpenModeSelector={handleHomeClick}
-          onOpenRules={() => setShowRulesInfo(true)}
-        />
+    <main className="h-screen h-[100dvh] max-h-screen w-full flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden select-none selection:bg-[var(--neon-x)] selection:text-white">
+      {/* Radial glow spotlight background */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle at 50% 45%, rgba(40, 25, 70, 0.35) 0%, rgba(17, 17, 17, 0) 70%)',
+        }}
+      />
 
-        {/* Online Player Status Badge — positioned above board with clear top margin so it's not stuck to scoreboard */}
-        {gameState.mode === 'online' && assignedSymbol && (
-          <div
-            className="mt-4 sm:mt-5 px-4 py-1.5 rounded-full border flex items-center gap-2 text-xs font-bold uppercase tracking-widest shadow-lg shrink-0 animate-fadeIn"
-            style={{
-              background: 'var(--bg-surface)',
-              borderColor: assignedSymbol === 'X' ? 'rgba(255, 71, 87, 0.4)' : 'rgba(163, 230, 53, 0.4)',
-              boxShadow: assignedSymbol === 'X' ? '0 0 16px rgba(255, 71, 87, 0.2)' : '0 0 16px rgba(163, 230, 53, 0.2)',
-              color: assignedSymbol === 'X' ? 'var(--neon-x)' : 'var(--neon-o)',
-            }}
-          >
-            <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: assignedSymbol === 'X' ? 'var(--neon-x)' : 'var(--neon-o)' }} />
-            <span>YOU ARE PLAYER <strong>{assignedSymbol}</strong></span>
-          </div>
-        )}
-      </header>
+      {/* Unified Game Content Container — centered with tight vertical spacing */}
+      <div className="w-full max-w-md flex flex-col items-center justify-center my-auto gap-2 sm:gap-4">
+        {/* Top Bar Controls & Scoreboard */}
+        <header className="w-full shrink-0 flex flex-col items-center">
+          <ScoreBar
+            score={score}
+            currentTurn={gameState.turn}
+            winner={gameState.winner}
+            mode={gameState.mode}
+            aiDifficulty={gameState.aiDifficulty}
+            isMuted={isMuted}
+            onToggleMute={handleToggleMute}
+            onResetGame={handleResetGame}
+            onOpenModeSelector={handleHomeClick}
+            onOpenRules={() => setShowRulesInfo(true)}
+          />
 
-      {/* Flat-On Hero Board Centered in Viewport */}
-      <div className="my-auto flex flex-col items-center justify-center shrink-0 py-2 sm:py-4">
-        <Board
-          gameState={gameState}
-          winner={gameState.winner}
-          onCellClick={handleCellClick}
-          disabled={
-            gameState.status !== 'playing' ||
-            (gameState.mode === 'ai' && gameState.turn === 'O') ||
-            (gameState.mode === 'online' && gameState.turn !== assignedSymbol)
-          }
-        />
+          {/* Online Player Status Badge */}
+          {gameState.mode === 'online' && assignedSymbol && (
+            <div
+              className="mt-2 sm:mt-3 px-4 py-1.5 rounded-full border flex items-center gap-2 text-xs font-bold uppercase tracking-widest shadow-lg shrink-0 animate-fadeIn"
+              style={{
+                background: 'var(--bg-surface)',
+                borderColor: assignedSymbol === 'X' ? 'rgba(255, 71, 87, 0.4)' : 'rgba(163, 230, 53, 0.4)',
+                boxShadow: assignedSymbol === 'X' ? '0 0 16px rgba(255, 71, 87, 0.2)' : '0 0 16px rgba(163, 230, 53, 0.2)',
+                color: assignedSymbol === 'X' ? 'var(--neon-x)' : 'var(--neon-o)',
+              }}
+            >
+              <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: assignedSymbol === 'X' ? 'var(--neon-x)' : 'var(--neon-o)' }} />
+              <span>YOU ARE PLAYER <strong>{assignedSymbol}</strong></span>
+            </div>
+          )}
+        </header>
 
-        {/* Play Again / Rematch Controls — appears below board on game end */}
-        {gameState.status === 'won' && (
-          <div className="mt-3 sm:mt-4 flex flex-col items-center gap-2" style={{ animation: 'fadeIn 0.3s ease-out 0.3s both' }}>
-            {gameState.mode === 'online' ? (
-              rematchPending ? (
-                <div className="px-5 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-xs font-semibold text-zinc-300 flex items-center gap-2 shadow-lg">
-                  <span className="w-2 h-2 rounded-full bg-[var(--neon-o)] animate-pulse" />
-                  <span>Waiting for opponent to accept...</span>
-                </div>
-              ) : rematchRequestedByOpponent ? (
-                <button
-                  onClick={handleAcceptRematch}
-                  className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl bg-[var(--neon-o)] hover:opacity-90 text-black text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-[0_0_20px_rgba(163,230,53,0.4)]"
-                >
-                  Accept Rematch
-                </button>
+        {/* Flat-On Hero Board Centered with Scoreboard */}
+        <div className="flex flex-col items-center justify-center shrink-0">
+          <Board
+            gameState={gameState}
+            winner={gameState.winner}
+            onCellClick={handleCellClick}
+            disabled={
+              gameState.status !== 'playing' ||
+              (gameState.mode === 'ai' && gameState.turn === 'O') ||
+              (gameState.mode === 'online' && gameState.turn !== assignedSymbol)
+            }
+          />
+
+          {/* Play Again / Rematch Controls — appears below board on game end */}
+          {gameState.status === 'won' && (
+            <div className="mt-3 sm:mt-4 flex flex-col items-center gap-2" style={{ animation: 'fadeIn 0.3s ease-out 0.3s both' }}>
+              {gameState.mode === 'online' ? (
+                rematchPending ? (
+                  <div className="px-5 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-xs font-semibold text-zinc-300 flex items-center gap-2 shadow-lg">
+                    <span className="w-2 h-2 rounded-full bg-[var(--neon-o)] animate-pulse" />
+                    <span>Waiting for opponent to accept...</span>
+                  </div>
+                ) : rematchRequestedByOpponent ? (
+                  <button
+                    onClick={handleAcceptRematch}
+                    className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl bg-[var(--neon-o)] hover:opacity-90 text-black text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-[0_0_20px_rgba(163,230,53,0.4)]"
+                  >
+                    Accept Rematch
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleResetGame}
+                    className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-bold uppercase tracking-widest transition-all cursor-pointer shadow-lg"
+                  >
+                    Play again
+                  </button>
+                )
               ) : (
                 <button
                   onClick={handleResetGame}
@@ -380,17 +398,10 @@ export default function Home() {
                 >
                   Play again
                 </button>
-              )
-            ) : (
-              <button
-                onClick={handleResetGame}
-                className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-bold uppercase tracking-widest transition-all cursor-pointer shadow-lg"
-              >
-                Play again
-              </button>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* How to Play Rules Modal */}

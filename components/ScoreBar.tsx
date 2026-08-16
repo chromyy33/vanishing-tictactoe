@@ -185,7 +185,7 @@ export const ScoreBar: React.FC<ScoreBarProps> = ({
         <div className="grid grid-cols-2 relative">
           {/* X Column */}
           <div
-            className="flex flex-col items-center py-4 px-5 transition-colors duration-300"
+            className="flex flex-col items-center py-3 px-4 sm:py-4 sm:px-5 transition-colors duration-300"
             style={{
               background: xWon
                 ? 'rgba(255, 71, 87, 0.08)'
@@ -220,7 +220,7 @@ export const ScoreBar: React.FC<ScoreBarProps> = ({
 
           {/* O Column */}
           <div
-            className="flex flex-col items-center py-4 px-5 border-l transition-colors duration-300"
+            className="flex flex-col items-center py-3 px-4 sm:py-4 sm:px-5 border-l transition-colors duration-300"
             style={{
               borderColor: dividerStyle.borderColor,
               background: oWon

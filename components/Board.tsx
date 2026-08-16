@@ -24,7 +24,7 @@ export const Board: React.FC<BoardProps> = ({ gameState, onCellClick, disabled, 
     <div className="board-container relative p-2 sm:p-4 flex items-center justify-center">
       {/* Flat-on board frame */}
       <div
-        className="relative grid grid-cols-3 gap-3 sm:gap-4 p-4 sm:p-5 rounded-3xl border backdrop-blur-2xl transition-all duration-700"
+        className="relative grid grid-cols-3 gap-2.5 xs:gap-3 sm:gap-4 p-3 xs:p-4 sm:p-5 rounded-3xl border backdrop-blur-2xl transition-all duration-700"
         style={{
           background: 'rgba(30,30,30,0.9)',
           ...borderStyle,

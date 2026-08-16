@@ -27,7 +27,7 @@ export const Cell: React.FC<CellProps> = ({
       disabled={disabled || value !== null}
       aria-label={`Board cell ${index + 1}`}
       className={`
-        cell-3d relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 
+        cell-3d relative w-[4.6rem] h-[4.6rem] xs:w-20 xs:h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 
         rounded-2xl flex items-center justify-center 
         cursor-pointer select-none transition-all duration-200
         ${
@@ -57,7 +57,7 @@ export const Cell: React.FC<CellProps> = ({
         >
           {value === 'X' ? (
             <svg
-              className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20"
+              className="w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -70,7 +70,7 @@ export const Cell: React.FC<CellProps> = ({
             </svg>
           ) : (
             <svg
-              className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20"
+              className="w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 md:w-20 md:h-20"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
