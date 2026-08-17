@@ -33,12 +33,17 @@ export const Cell: React.FC<CellProps> = ({
         ${
           isWinningCell
             ? value === 'X'
-              ? 'bg-[#1e103d] border-[#ff2d78]/70 shadow-[0_0_25px_rgba(255,45,120,0.4)]'
-              : 'bg-[#0f2434] border-[#00e5b0]/70 shadow-[0_0_25px_rgba(0,229,176,0.4)]'
+              ? 'border border-[#ff4757]/60 shadow-[0_0_25px_rgba(255,71,87,0.35)]'
+              : 'border border-[#a3e635]/60 shadow-[0_0_25px_rgba(163,230,53,0.3)]'
             : ''
         }
         ${disabled && value === null ? 'opacity-40 cursor-not-allowed' : ''}
       `}
+      style={isWinningCell ? {
+        background: value === 'X'
+          ? 'rgba(255,71,87,0.08)'
+          : 'rgba(163,230,53,0.08)'
+      } : {}}
     >
       {/* Symbol: X (Hot Pink Neon) or O (Cyan-Green Neon) */}
       {value !== null && (

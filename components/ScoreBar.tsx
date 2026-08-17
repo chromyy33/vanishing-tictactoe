@@ -82,7 +82,7 @@ export const ScoreBar: React.FC<ScoreBarProps> = ({
       
       {/* Fixed Viewport Corners */}
       {/* Home Button — Top Left */}
-      <div className="fixed top-4 left-4 z-40">
+      <div className="fixed top-[max(1rem,env(safe-area-inset-top))] left-4 z-40">
         <button
           onClick={onOpenModeSelector}
           aria-label="Home"
@@ -94,7 +94,7 @@ export const ScoreBar: React.FC<ScoreBarProps> = ({
       </div>
 
       {/* Settings + Restart — Top Right */}
-      <div className="fixed top-4 right-4 z-40 flex items-center gap-2">
+      <div className="fixed top-[max(1rem,env(safe-area-inset-top))] right-4 z-40 flex items-center gap-2">
         {/* Settings Button + Dropdown */}
         <div className="relative">
           <button

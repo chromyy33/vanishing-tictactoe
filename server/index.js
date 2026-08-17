@@ -46,6 +46,14 @@ io.on('connection', (socket) => {
         ]
       });
 
+      // Auto-cleanup room after 15 minutes to prevent memory leaks
+      setTimeout(() => {
+        if (rooms.has(roomId)) {
+          console.log(`[Room] TTL expired, cleaning room ${roomId}`);
+          rooms.delete(roomId);
+        }
+      }, 15 * 60 * 1000);
+
       player1.emit('game_matched', { roomId, symbol: 'X', opponentId: player2.id });
       player2.emit('game_matched', { roomId, symbol: 'O', opponentId: player1.id });
       console.log(`[Queue] Matched room ${roomId}: ${player1.id} (X) vs ${player2.id} (O)`);
@@ -64,6 +72,14 @@ io.on('connection', (socket) => {
       id: roomId,
       players: [{ id: socket.id, symbol: 'X' }]
     });
+
+    // Auto-cleanup room after 15 minutes to prevent memory leaks
+    setTimeout(() => {
+      if (rooms.has(roomId)) {
+        console.log(`[Room] TTL expired, cleaning room ${roomId}`);
+        rooms.delete(roomId);
+      }
+    }, 15 * 60 * 1000);
     socket.emit('room_created', { roomId, symbol: 'X' });
     console.log(`[Room] Created room ${roomId} by ${socket.id}`);
   });

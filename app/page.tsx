@@ -232,7 +232,7 @@ export default function Home() {
       updateScore(nextState.winner);
       soundManager.playWin();
     }
-  }, [gameState, assignedSymbol, activeRoomId]);
+  }, [gameState.status, gameState.turn, gameState.mode, gameState.board, assignedSymbol, activeRoomId]);
 
   // AI Automatic Move Effect
   useEffect(() => {
@@ -516,6 +516,15 @@ export default function Home() {
           handleConfirmExit();
         }}
       />
+
+      {/* Screen reader live region for turn announcements */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {gameState.status === 'playing'
+          ? `Player ${gameState.turn}'s turn`
+          : gameState.winner
+          ? `Player ${gameState.winner} wins`
+          : ''}
+      </div>
     </main>
   );
 }

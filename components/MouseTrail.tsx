@@ -65,9 +65,11 @@ export const MouseTrail: React.FC = () => {
         duration: 0.85,
         ease: 'power2.out',
         onComplete: () => {
-          if (el.parentNode === container) {
-            container.removeChild(el);
-          }
+          try {
+            if (el.isConnected && el.parentNode === container) {
+              container.removeChild(el);
+            }
+          } catch {}
         },
       });
     };
