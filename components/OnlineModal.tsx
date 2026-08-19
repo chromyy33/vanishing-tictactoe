@@ -76,7 +76,14 @@ export const OnlineModal: React.FC<OnlineModalProps> = ({
               <Loader2 className="w-6 h-6 absolute animate-spin" style={{ color: 'var(--neon-o)' }} />
             </div>
             <div>
-              <div className="text-sm font-bold text-white uppercase tracking-wider">Searching for an opponent...</div>
+              <div className="flex items-baseline gap-0 text-sm font-bold text-white uppercase tracking-wider">
+                <span>Searching for an opponent</span>
+                <span className="dot-pulse ml-0.5">
+                  <span style={{ color: 'var(--neon-o)' }}>.</span>
+                  <span style={{ color: 'var(--neon-o)' }}>.</span>
+                  <span style={{ color: 'var(--neon-o)' }}>.</span>
+                </span>
+              </div>
               <div className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Please keep this window open</div>
             </div>
             {activeRoomId && (

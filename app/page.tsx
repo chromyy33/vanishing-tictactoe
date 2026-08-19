@@ -6,6 +6,7 @@ import { createInitialState, makeMove } from '../lib/game/logic';
 import { getAIMove } from '../lib/game/ai';
 import { soundManager } from '../lib/audio';
 import { getSocket, connectSocket } from '../lib/socket/client';
+import { vibrateMove, vibrateVanish, vibrateWin } from '../lib/haptics';
 import { Board } from '../components/Board';
 import { ScoreBar } from '../components/ScoreBar';
 import { ModeSelector } from '../components/ModeSelector';
@@ -33,6 +34,12 @@ export default function Home() {
   const [rematchPending, setRematchPending] = useState(false);
   const [rematchRequestedByOpponent, setRematchRequestedByOpponent] = useState(false);
   const [opponentDisconnected, setOpponentDisconnected] = useState(false);
+
+  // Win flash overlay
+  const [winFlash, setWinFlash] = useState<'X' | 'O' | null>(null);
+
+  // Rematch countdown (auto-accept when reaches 0)
+  const [rematchCountdown, setRematchCountdown] = useState<number | null>(null);
 
   // Home Click Handler with Exit Confirmation
   const handleHomeClick = () => {
@@ -122,12 +129,16 @@ export default function Home() {
     }
   }, [activeRoomId]);
 
-  // Victory Confetti Effect
+  // Victory Confetti + Flash Effect
   useEffect(() => {
     if (gameState.status === 'won' && gameState.winner) {
       const colors = gameState.winner === 'X'
         ? ['#ff4757', '#ff6b7a', '#ffffff']
         : ['#a3e635', '#c5f135', '#ffffff'];
+
+      // Full-screen flash
+      setWinFlash(gameState.winner);
+      setTimeout(() => setWinFlash(null), 700);
 
       const duration = 1500;
       const end = Date.now() + duration;
@@ -159,6 +170,30 @@ export default function Home() {
       frame();
     }
   }, [gameState.status, gameState.winner]);
+
+  // Rematch countdown — auto-accept when opponent requests & timer hits 0
+  useEffect(() => {
+    if (!rematchRequestedByOpponent) {
+      setRematchCountdown(null);
+      return;
+    }
+    setRematchCountdown(10);
+    const interval = setInterval(() => {
+      setRematchCountdown(prev => {
+        if (prev === null) return null;
+        if (prev <= 1) { clearInterval(interval); return 0; }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [rematchRequestedByOpponent]);
+
+  useEffect(() => {
+    if (rematchCountdown === 0 && rematchRequestedByOpponent) {
+      handleAcceptRematch();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rematchCountdown]);
 
   // Mode Selection Handler
   const handleSelectMode = (
@@ -216,6 +251,15 @@ export default function Home() {
     }
 
     setGameState(nextState);
+
+    // Haptic feedback
+    if (nextState.lastVanishedIndex !== null) {
+      vibrateVanish();
+    } else if (nextState.status === 'won') {
+      vibrateWin();
+    } else {
+      vibrateMove();
+    }
 
     // Online move emission
     if (gameState.mode === 'online' && activeRoomId) {
@@ -359,10 +403,22 @@ export default function Home() {
         }}
       />
 
+      {/* Win flash overlay */}
+      {winFlash && (
+        <div
+          className="fixed inset-0 pointer-events-none z-[200] animate-win-flash"
+          style={{
+            background: winFlash === 'X'
+              ? 'radial-gradient(circle, rgba(255,71,87,0.25) 0%, rgba(255,71,87,0.05) 70%)'
+              : 'radial-gradient(circle, rgba(163,230,53,0.25) 0%, rgba(163,230,53,0.05) 70%)'
+          }}
+        />
+      )}
+
       {/* Unified Game Content Container — centered with tight vertical spacing */}
-      <div className="w-full max-w-md flex flex-col items-center justify-center my-auto gap-2 sm:gap-4">
+      <div className="w-full max-w-md flex flex-col items-center justify-center my-auto gap-2 sm:gap-4 landscape-game">
         {/* Top Bar Controls & Scoreboard */}
-        <header className="w-full shrink-0 flex flex-col items-center">
+        <header className="w-full shrink-0 flex flex-col items-center landscape-left">
           <ScoreBar
             score={score}
             currentTurn={gameState.turn}
@@ -394,7 +450,7 @@ export default function Home() {
         </header>
 
         {/* Flat-On Hero Board Centered with Scoreboard */}
-        <div className="flex flex-col items-center justify-center shrink-0">
+        <div className="flex flex-col items-center justify-center shrink-0 landscape-right">
           <Board
             gameState={gameState}
             winner={gameState.winner}
@@ -418,9 +474,12 @@ export default function Home() {
                 ) : rematchRequestedByOpponent ? (
                   <button
                     onClick={handleAcceptRematch}
-                    className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl bg-[var(--neon-o)] hover:opacity-90 text-black text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-[0_0_20px_rgba(163,230,53,0.4)]"
+                    className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-2xl bg-[var(--neon-o)] hover:opacity-90 text-black text-xs font-extrabold uppercase tracking-widest transition-all cursor-pointer shadow-[0_0_20px_rgba(163,230,53,0.4)] flex items-center gap-2"
                   >
                     Accept Rematch
+                    {rematchCountdown !== null && rematchCountdown > 0 && (
+                      <span className="font-mono tabular-nums opacity-70">({rematchCountdown}s)</span>
+                    )}
                   </button>
                 ) : (
                   <button

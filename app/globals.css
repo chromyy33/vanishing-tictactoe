@@ -239,3 +239,57 @@ body {
 .animate-fadeIn {
   animation: fadeIn 0.2s ease-out forwards;
 }
+
+/* Animated waiting dots */
+@keyframes dotBlink {
+  0%, 20%  { opacity: 0.15; transform: translateY(0); }
+  50%      { opacity: 1;    transform: translateY(-3px); }
+  80%, 100%{ opacity: 0.15; transform: translateY(0); }
+}
+.dot-pulse span {
+  display: inline-block;
+  animation: dotBlink 1.4s ease-in-out infinite;
+}
+.dot-pulse span:nth-child(1) { animation-delay: 0s; }
+.dot-pulse span:nth-child(2) { animation-delay: 0.2s; }
+.dot-pulse span:nth-child(3) { animation-delay: 0.4s; }
+
+/* Win flash full-screen overlay */
+@keyframes winFlash {
+  0%   { opacity: 0; }
+  18%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+.animate-win-flash {
+  animation: winFlash 0.7s ease-out forwards;
+}
+
+/* Score pop animation */
+@keyframes scorePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.45); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+.animate-score-pop {
+  animation: scorePop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Landscape layout — two-column split on short landscape screens */
+@media (orientation: landscape) and (max-height: 520px) {
+  .landscape-game {
+    flex-direction: row !important;
+    align-items: center !important;
+    max-width: none !important;
+    width: auto !important;
+    gap: 1.25rem !important;
+    padding: 0 0.75rem;
+  }
+  .landscape-left {
+    width: auto !important;
+    flex-shrink: 0;
+  }
+  .landscape-right {
+    flex-shrink: 0;
+  }
+}
