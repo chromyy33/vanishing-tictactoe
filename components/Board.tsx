@@ -22,14 +22,20 @@ export const Board: React.FC<BoardProps> = ({ gameState, onCellClick, disabled, 
 
   return (
     <div className="board-container relative p-2 sm:p-4 flex items-center justify-center">
-      {/* Flat-on board frame */}
+      {/* Flat-on board frame — overflow:visible so bottom-row glows aren't clipped on iOS Safari */}
       <div
-        className="relative grid grid-cols-3 gap-2.5 xs:gap-3 sm:gap-4 p-3 xs:p-4 sm:p-5 rounded-3xl border backdrop-blur-2xl transition-all duration-700"
+        className="relative grid grid-cols-3 gap-2.5 xs:gap-3 sm:gap-4 p-3 xs:p-4 sm:p-5 rounded-3xl border transition-all duration-700"
         style={{
           background: 'rgba(30,30,30,0.9)',
+          overflow: 'visible',
           ...borderStyle,
         }}
       >
+        {/* Backdrop blur on a separate inset layer — avoids iOS Safari implicit clipping */}
+        <div
+          className="absolute inset-0 rounded-3xl backdrop-blur-2xl pointer-events-none"
+          style={{ zIndex: 0 }}
+        />
         {/* Render 9 Cells */}
         {board.map((cellValue, idx) => (
           <Cell
